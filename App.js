@@ -1,8 +1,14 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Home from './Src/Screen/Home.jsx';
+import SplashScreen from 'react-native-splash-screen'
 
 const App = () => {
+  useEffect(()=>{
+    	// do stuff while splash screen is shown
+        // After having done stuff (such as async tasks) hide the splash screen
+        SplashScreen.hide();
+  },[])
   return (
     <View style={styles.container}>
       

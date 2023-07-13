@@ -2,6 +2,11 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity, Dimensions, StatusBar,
 import React, { useState, useRef } from 'react'
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Clipboard from '@react-native-clipboard/clipboard';
+
+
+const myIcon = <Icon name="qr-code" size={20} color="#FFC0D3" />;
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -13,6 +18,12 @@ const Home = () => {
     const [shouldActivate, setshouldActivate] = useState(true);
     const [isURL, setisURL] = useState(false);
     const [flash, setflash] = useState(false);
+    const [copiedText, setCopiedText] = useState('');
+
+    const copyToClipboard = () => {
+        Clipboard.setString(qrData);
+        setCopiedText(qrData)
+    };
 
 
     console.log('shouldActivate', shouldActivate)
@@ -41,12 +52,12 @@ const Home = () => {
             <StatusBar
                 animated={true}
                 backgroundColor="#61dafb"
-                barStyle={'dark-content'}
+                barStyle={'default'}
             />
             <View style={[styles.divTop]}>
-                <Text style={{ fontSize: 20, color: '#fff', fontWeight: 600 }}> Scan QR Code</Text>
+                <Text style={{ fontSize: 20, color: '#fff', fontWeight: 600 }}> {myIcon} Scan QR Code</Text>
                 <TouchableOpacity style={styles.buttonTouchable} onPress={() => setflash(!flash)} >
-                    <Text style={{ fontSize: 20, color: '#000' }}>{flash ? 'OFF' : 'ON'}</Text>
+                    <Text style={{ fontSize: 20, color: '#000' }}>{flash ? <Icon name="flash-off" size={20} color="#fff" /> : <Icon name="flash" size={21} color="#003" />}</Text>
                 </TouchableOpacity>
             </View>
             <View style={[styles.BoxBorder, { width: windowWidth, height: windowHeight }]}>
@@ -54,12 +65,12 @@ const Home = () => {
                 </View>
             </View>
             <QRCodeScanner
-                
+
                 cameraProps={{
-                    zoom:0.3
+                    zoom: 0.1
                 }}
                 reactivate={shouldActivate}
-                showMarker={true}
+                showMarker={false}
                 permissionDialogTitle={'Permission:'}
                 permissionDialogMessage={'Allow Camera Permission to Read QR/Bar Code ?'}
                 buttonPositive={'Allow'}
@@ -87,7 +98,13 @@ const Home = () => {
                             textTransform: 'capitalize'
                         }]}>Scanned Result:</Text>
                         <Text style={{ marginBottom: 10, fontSize: 15, color: '#222222' }}>{qrData}</Text>
-
+                        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: 9 }}>
+                            <TouchableOpacity onPress={copyToClipboard}>
+                                <Text>
+                                   { copiedText =='' ? <Icon name="copy-outline" size={20} color="#FFC0D3" /> : <Icon name="ios-copy" size={20} color="#000" />}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                             <Pressable
                                 style={[styles.button, styles.buttonClose]}
@@ -95,6 +112,7 @@ const Home = () => {
                                     setModalVisible(!modalVisible)
                                     setshouldActivate(true)
                                     first.current.reactivate();
+                                    setCopiedText('')
                                 }}>
                                 <Text style={styles.textStyle}>Scan Again</Text>
                             </Pressable>
@@ -110,7 +128,7 @@ const Home = () => {
                             </TouchableOpacity>) : null}
                         </View>
 
-                        <Text style={{ textAlign: 'center', marginTop: 30, color: '#EAEAEA' }}> Developed : By Scarlet_sujeet</Text>
+                        <Text style={{ textAlign: 'center', marginTop: 30, color: '#F4D9E7' }}> Developed : By Scarlet_sujeet</Text>
                     </View>
                 </View>
             </Modal>
@@ -125,8 +143,8 @@ const styles = StyleSheet.create({
         color: 'rgb(0,122,255)'
     },
     buttonTouchable: {
-        padding: 2,
-        borderRadius: 3,
+        padding: 8,
+        borderRadius: 50,
         backgroundColor: '#FFC0D3',
         shadowColor: "#000000",
         shadowOffset: {
@@ -168,7 +186,7 @@ const styles = StyleSheet.create({
     DashedBorder: {
         borderWidth: 2,
         borderStyle: 'dashed',
-        borderColor: '#8DCBE6',
+        borderColor: '#8AD7C1',
         width: 250,
         height: 250,
         shadowColor: "#000000",
